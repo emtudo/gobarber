@@ -11,7 +11,7 @@ class ProfileController {
   async update(request, response) {
     const { user, body } = request
     if (!(await validationUpdate.isValid(body))) {
-      return response.status(400).json({ error: 'Validation fails' })
+      return response.status(422).json({ error: 'Validation fails' })
     }
     const { email } = body
 

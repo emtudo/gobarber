@@ -17,7 +17,7 @@ class UserController {
     }
     const { email } = request.body
     if (await UserRepository.findUserByEmail(email)) {
-      return response.status(400).json({
+      return response.status(422).json({
         error: 'User already exists.',
       })
     }
@@ -31,7 +31,7 @@ class UserController {
     const { body } = request
     const { email } = body
     if (!(await validationUpdate.isValid(body))) {
-      return response.status(400).json({ error: 'Validation fails' })
+      return response.status(422).json({ error: 'Validation fails' })
     }
 
     let user
