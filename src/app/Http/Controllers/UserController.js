@@ -1,5 +1,11 @@
 const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
 
+const checkEmailExists = async email => {
+  const exists = await UserRepository.findUserByEmail(email)
+
+  return exists
+}
+
 class UserController {
   async store(request, response) {
     const { email } = request.body
@@ -16,12 +22,17 @@ class UserController {
   async update(request, response) {
     const { id } = request.params
     const { body } = request
+    const { email } = body
 
     let user
     try {
       user = await UserRepository.findById(id)
     } catch (err) {
       return response.status(400).json({ error: '1User not found' })
+    }
+
+    if (email && user.email !== email && (await checkEmailExists(email))) {
+      return response.status(400).json({ error: 'Email already exists' })
     }
 
     const userUpdated = await UserRepository.update(user, body)
