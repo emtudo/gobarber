@@ -13,11 +13,11 @@ const checkEmailExists = async email => {
 class UserController {
   async store(request, response) {
     if (!(await validationCreate.isValid(request.body))) {
-      return response.status(400).json({ error: 'Validation fails' })
+      return response.status(422).json({ error: 'Validation fails' })
     }
     const { email } = request.body
     if (await UserRepository.findUserByEmail(email)) {
-      return response.status(422).json({
+      return response.status(400).json({
         error: 'User already exists.',
       })
     }
