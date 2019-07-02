@@ -1,4 +1,8 @@
 const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
+const {
+  create: validationCreate,
+  update: validationUpdate,
+} = require('../../Domains/Users/Rules')
 
 const checkEmailExists = async email => {
   const exists = await UserRepository.findUserByEmail(email)
@@ -8,6 +12,9 @@ const checkEmailExists = async email => {
 
 class UserController {
   async store(request, response) {
+    if (!(await validationCreate.isValid(request.body))) {
+      return response.status(400).json({ error: 'Validation fails' })
+    }
     const { email } = request.body
     if (await UserRepository.findUserByEmail(email)) {
       return response.status(400).json({
@@ -23,6 +30,9 @@ class UserController {
     const { id } = request.params
     const { body } = request
     const { email } = body
+    if (!(await validationUpdate.isValid(body))) {
+      return response.status(400).json({ error: 'Validation fails' })
+    }
 
     let user
     try {

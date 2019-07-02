@@ -1,4 +1,5 @@
 const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
+const { update: validationUpdate } = require('../../Domains/Users/Rules')
 
 const checkEmailExists = async email => {
   const exists = await UserRepository.findUserByEmail(email)
@@ -9,6 +10,9 @@ const checkEmailExists = async email => {
 class ProfileController {
   async update(request, response) {
     const { user, body } = request
+    if (!(await validationUpdate.isValid(body))) {
+      return response.status(400).json({ error: 'Validation fails' })
+    }
     const { email } = body
 
     if (email && user.email !== email && (await checkEmailExists(email))) {
