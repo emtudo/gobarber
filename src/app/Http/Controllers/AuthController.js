@@ -1,22 +1,22 @@
-const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
+const AuthRepository = require('../../Domains/Users/Repositories/AuthRepository')
 
 class AuthController {
   async store(request, response) {
     const { email, password } = request.body
-    const user = await UserRepository.findUserByEmail(email)
+    const user = await AuthRepository.findUserByEmail(email)
     if (!user) {
       return response.status(401).json({
         error: 'Unauthorized',
       })
     }
 
-    if (!(await UserRepository.checkPassword(user, password))) {
+    if (!(await AuthRepository.checkPassword(user, password))) {
       return response.status(401).json({
         error: 'Unauthorized',
       })
     }
 
-    return response.json(UserRepository.auth(user))
+    return response.json(AuthRepository.auth(user))
   }
 }
 

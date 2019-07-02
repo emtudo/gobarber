@@ -5,7 +5,8 @@ const Model = require('../../Support/Domain/Model')
 const defines = {
   name: Sequelize.STRING,
   email: Sequelize.STRING,
-  password: Sequelize.STRING,
+  password: Sequelize.VIRTUAL,
+  password_hash: Sequelize.STRING,
   provider: Sequelize.BOOLEAN,
 }
 
@@ -15,7 +16,7 @@ class User extends Model {
 
     this.addHook('beforeSave', async user => {
       if (user.password) {
-        user.password = await bcrypt.hash(user.password, 10)
+        user.password_hash = await bcrypt.hash(user.password, 10)
       }
     })
 
