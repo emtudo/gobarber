@@ -7,10 +7,13 @@
     "dev": "nodemon src/server.js"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.17.1",
+    "lodash": "^4.17.11",
     "pg": "^7.11.0",
     "pg-hstore": "^2.3.3",
-    "sequelize": "^5.9.0"
+    "sequelize": "^5.9.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "eslint": "^6.0.1",
