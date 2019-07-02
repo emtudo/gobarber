@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 
 const databaseConfig = require('../config/database')
 
-const User = require('../app/models/User')
+const User = require('../app/Domains/Users/User')
 
 const models = [User]
 
