@@ -41,7 +41,7 @@ class UserController {
     try {
       user = await UserRepository.findById(id)
     } catch (err) {
-      return response.status(400).json({ error: '1User not found' })
+      return response.status(400).json({ error: 'User not found' })
     }
 
     if (email && user.email !== email && (await checkEmailExists(email))) {
