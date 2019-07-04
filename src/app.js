@@ -1,5 +1,5 @@
 const express = require('express')
-const routes = require('./routes')
+const routes = require('./app/Http/Routes')
 
 require('./database')
 
@@ -16,7 +16,8 @@ class App {
   }
 
   routes() {
-    this.server.use(routes)
+    routes(this.server)
+    // this.server.use(routes)
   }
 }
 
