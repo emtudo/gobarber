@@ -1,4 +1,6 @@
-const AuthRepository = require('../../Domains/Users/Repositories/AuthRepository')
+const Repository = require('../../Domains/Users/Repositories/AuthRepository')
+
+const AuthRepository = new Repository()
 
 const checkPassword = async (user, password) => {
   const valid = await AuthRepository.checkPassword(user, password)

@@ -1,4 +1,7 @@
-const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
+const Repository = require('../../Domains/Users/Repositories/UserRepository')
+
+const UserRepository = new Repository()
+
 const {
   create: validationCreate,
   update: validationUpdate,

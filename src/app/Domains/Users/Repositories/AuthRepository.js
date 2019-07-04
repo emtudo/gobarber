@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const { promisify } = require('util')
 
 const User = require('../User')
-const UserRepository = require('./repository')
+const UserRepository = require('./UserRepository')
 const authConfig = require('../../../../config/auth')
 const checkPassword = require('./checkPassword')
 
@@ -42,4 +42,4 @@ class AuthRepository extends UserRepository {
   }
 }
 
-module.exports = new AuthRepository()
+module.exports = AuthRepository

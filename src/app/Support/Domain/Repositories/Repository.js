@@ -1,6 +1,8 @@
 class Repository {
   async findById(id) {
-    return await this.findBy(id)
+    const entity = await this.findBy(id)
+
+    return entity
   }
   async findBy(value, field = 'id') {
     const model = await this.model.findOne({

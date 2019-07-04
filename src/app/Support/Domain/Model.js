@@ -1,5 +1,3 @@
-const Sequelize = require('sequelize')
-
 const { Model: SequelizeModel } = require('sequelize')
 const uuid = require('uuid/v4')
 

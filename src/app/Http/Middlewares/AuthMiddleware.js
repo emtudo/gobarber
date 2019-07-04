@@ -1,4 +1,6 @@
-const AuthRepository = require('../../Domains/Users/Repositories/AuthRepository')
+const Repository = require('../../Domains/Users/Repositories/AuthRepository')
+
+const AuthRepository = new Repository()
 
 module.exports = async (request, response, next) => {
   const authHeader = request.headers.authorization

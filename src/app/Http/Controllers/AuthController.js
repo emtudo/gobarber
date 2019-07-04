@@ -1,4 +1,6 @@
-const AuthRepository = require('../../Domains/Users/Repositories/AuthRepository')
+const Repository = require('../../Domains/Users/Repositories/AuthRepository')
+
+const AuthRepository = new Repository()
 
 class AuthController {
   async store(request, response) {

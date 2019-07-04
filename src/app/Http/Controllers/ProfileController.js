@@ -1,5 +1,8 @@
-const UserRepository = require('../../Domains/Users/Repositories/UserRepository')
+const Repository = require('../../Domains/Users/Repositories/UserRepository')
+
 const { update: validationUpdate } = require('../../Domains/Users/Rules')
+
+const UserRepository = new Repository()
 
 const checkEmailExists = async email => {
   const exists = await UserRepository.findUserByEmail(email)
