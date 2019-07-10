@@ -83,7 +83,7 @@ class Repository {
   async update(entity, data) {
     const newData = getData(this, data)
 
-    return entity.update(data)
+    return entity.update(newData)
   }
 }
 
