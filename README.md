@@ -1,4 +1,4 @@
-# Node skeleton
+# Go Barber 
 
 ## Requirements
 
