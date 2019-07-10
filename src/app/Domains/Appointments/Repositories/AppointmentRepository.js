@@ -1,21 +1,6 @@
 const Appointment = require('../Appointment')
 const Repository = require('../../../Support/Domain/Repositories/Repository')
-const User = require('../../Users/User')
-const File = require('../../Files/File')
-
-const getInclude = as => ({
-  model: User,
-  as,
-  attributes: ['id', 'name'],
-  include: [{
-    model: File,
-    as: 'avatar',
-    attributes: ['id', 'path', 'url_avatar']
-  }]
-})
-
-const includeUser = getInclude('user')
-const includeProvider = getInclude('provider')
+const includeProvider = require('./_includeUser')('provider')
 
 class AppointmentRepository extends Repository {
   constructor() {
@@ -23,7 +8,7 @@ class AppointmentRepository extends Repository {
     this.model = Appointment
     this.user_id = null
     this.order = [['date', 'DESC']]
-    this.include = [includeUser, includeProvider]
+    this.include = [includeProvider]
   }
 
   async getAllNoCancel(params = {}) {
