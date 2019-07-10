@@ -28,12 +28,31 @@ const getOrder = ({ order }, params) => arrayMergeParams(order, params)
 const getInclude = ({ include }, params) => arrayMergeParams(include, params)
 
 class Repository {
+  constructor() {
+    this.limit = 100
+    this.page = 1
+  }
   setUser({ id }) {
     this.user_id = id
     return this
   }
   setUserId(userId) {
     this.user_id = userId
+
+    return this
+  }
+  setLimit(limit, page) {
+    if (limit) {
+      this.limit = limit
+    }
+    if (page) {
+      this.setPage(page)
+    }
+
+    return this
+  }
+  setPage(page) {
+    this.page = page
 
     return this
   }
@@ -58,6 +77,14 @@ class Repository {
     if (!isEmpty(this.user_id)) {
       query['user_id'] = this.user_id
     }
+    if (this.limit) {
+      query['limit'] = this.limit
+    }
+    if (this.page && this.limit) {
+      query['offset'] = (this.page - 1) * this.limit
+    }
+
+    console.log({ query, limit: this.limit, page: this.page })
 
     const entities = await this.model.findAll(query)
 

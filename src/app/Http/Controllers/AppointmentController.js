@@ -9,9 +9,10 @@ const { create: validationCreate } = require('../../Domains/Appointments/Rules')
 
 class AppointmentController {
   async index(request, response) {
-    const appointments = await AppointmentRepository.setUser(
-      request.user,
-    ).getAllNoCancel()
+    const { page = 1, limit } = request.query
+    const appointments = await AppointmentRepository.setLimit(limit, page)
+      .setUser(request.user)
+      .getAllNoCancel()
 
     return response.json(appointments)
   }
@@ -19,8 +20,8 @@ class AppointmentController {
     if (!(await validationCreate.isValid(request.body))) {
       return response.status(422).json({ error: 'Validation fails' })
     }
-    const { provider_id, date } = request.body
-    const provider = await ProviderRepository.findById(provider_id)
+    const { provider_id: providerId, date } = request.body
+    const provider = await ProviderRepository.findById(providerId)
     if (!provider) {
       return response.status(400).json({
         error: 'Provider do not exists.',
