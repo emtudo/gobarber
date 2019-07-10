@@ -3,15 +3,12 @@ const { resolve } = require('path')
 const { Router } = express
 const AuthMiddleware = require('../Middlewares/AuthMiddleware')
 
+const appointments = require('./appointments')
 const auth = require('./auth')
 const files = require('./files')
 const profile = require('./profile')
 const users = require('./users')
 const providers = require('./providers')
-const NoAuthMiddeware = (request, response, next) => {
-  request.noAuth = true
-  next()
-}
 
 module.exports = server => {
   auth(server, new Router())
@@ -29,6 +26,7 @@ module.exports = server => {
   server.use('/avatar/', express.static(resolve(pathAvatar)))
 
   server.use(AuthMiddleware, (request, response, next) => {
+    appointments(server, new Router())
     files(server, new Router())
     profile(server, new Router())
     users(server, new Router())

@@ -28,6 +28,17 @@ class UserRepository extends Repository {
     super()
     this.model = User
   }
+  async findBy(value, field = 'id') {
+    const where =  {
+      [field]: value,
+    }
+    if (this.onlyProvider) {
+      where['provider'] = true
+    }
+    const model = await this.model.findOne({ where })
+
+    return model
+  },
   async getAll(
     params = {},
     attributes = defaultAttributes,
