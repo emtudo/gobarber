@@ -1,20 +1,12 @@
-const Repository = require('../../Domains/Files/Repositories/FileRepository')
-
-const FileRepository = new Repository()
+const { create } = require('./_createFile')
 
 class FileController {
   async store(request, response) {
-    const { originalname: name, filename: path } = request.file
-    const { user } = request
+    const { id, user_id, name, path, createdAt, updatedAt, url } = await create(
+      request,
+    )
 
-    const data = {
-      user_id: user.id,
-      name,
-      path,
-    }
-    const file = await FileRepository.create(data)
-
-    return response.json(file)
+    return response.json({ id, user_id, name, path, createdAt, updatedAt, url })
   }
 }
 
