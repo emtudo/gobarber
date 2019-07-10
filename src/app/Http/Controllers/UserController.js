@@ -14,6 +14,11 @@ const checkEmailExists = async email => {
 }
 
 class UserController {
+  async index(request, response) {
+    const users = await UserRepository.getAll()
+
+    return response.json(users)
+  }
   async store(request, response) {
     if (!(await validationCreate.isValid(request.body))) {
       return response.status(422).json({ error: 'Validation fails' })

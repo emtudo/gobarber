@@ -8,6 +8,7 @@ const auth = require('./auth')
 const files = require('./files')
 const profile = require('./profile')
 const users = require('./users')
+const providers = require('./providers')
 
 module.exports = server => {
   auth(server, new Router())
@@ -16,6 +17,7 @@ module.exports = server => {
     files(server, new Router())
     profile(server, new Router())
     users(server, new Router())
+    providers(server, new Router())
 
     next()
   })
