@@ -59,8 +59,6 @@ class Repository {
       query['user_id'] = this.user_id
     }
 
-    console.log({ query })
-
     const entities = await this.model.findAll(query)
 
     return entities
