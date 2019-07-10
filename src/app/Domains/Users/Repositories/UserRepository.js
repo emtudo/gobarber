@@ -1,11 +1,12 @@
 const User = require('../User')
 const Repository = require('../../../Support/Domain/Repositories/Repository')
 
-const parserUser = ({ id, name, email, provider }) => ({
+const parserUser = ({ id, name, email, provider, avatar_id }) => ({
   id,
   name,
   email,
   provider,
+  avatar_id,
 })
 
 class UserRepository extends Repository {
