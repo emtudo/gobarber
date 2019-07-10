@@ -5,6 +5,7 @@ class AppointmentRepository extends Repository {
   constructor() {
     super()
     this.model = Appointment
+    this.user_id = null
   }
 
   async isAvailable(provider_id, date) {

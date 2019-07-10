@@ -9,7 +9,9 @@ const { create: validationCreate } = require('../../Domains/Appointments/Rules')
 
 class AppointmentController {
   async index(request, response) {
-    const appointments = await AppointmentRepository.getAll()
+    const appointments = await AppointmentRepository.setUser(
+      request.user,
+    ).getAll()
 
     return response.json(appointments)
   }
@@ -19,7 +21,6 @@ class AppointmentController {
     }
     const { provider_id, date } = request.body
     const provider = await ProviderRepository.findById(provider_id)
-    console.log({ provider })
     if (!provider) {
       return response.status(400).json({
         error: 'Provider do not exists.',
@@ -49,7 +50,14 @@ class AppointmentController {
         .json({ error: 'Appointment date unavailable' })
     }
 
-    const appointment = await AppointmentRepository.create(request.body)
+    const params = {
+      provider_id,
+      date: hourStart,
+    }
+
+    const appointment = await AppointmentRepository.setUser(
+      request.user,
+    ).create(params)
 
     return response.json(appointment)
   }
