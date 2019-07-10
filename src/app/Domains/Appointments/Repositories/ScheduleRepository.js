@@ -25,7 +25,6 @@ class ScheduleRepository extends Repository {
 
   async getScheduleFromDate(date) {
     const params = getParams(date)
-    console.log({ params })
     const schedules = await this.getAllNoCancel(params)
 
     return schedules
