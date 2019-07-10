@@ -1,34 +1,31 @@
 const { isEmpty } = require('lodash')
 
-const getData = (context, params) => {
-  const { user_id, data } = context
+const mergeObjectWithUser = (userId, data, params) => {
+  const newData = objectMergeParams(data, params)
 
-  const newData = {
-    ...(data || {}),
-    ...params,
-  }
-
-  if (user_id) {
-    newData['user_id'] = user_id
+  if (userId) {
+    newData['user_id'] = userId
   }
 
   return newData
 }
 
-const getWhere = (context, params) => {
-  const { user_id, where } = context
+const arrayMergeParams = (data, params) => [...(data || []), ...params]
 
-  const data = {
-    ...(where || {}),
-    ...params,
-  }
+const objectMergeParams = (data, params) => ({
+  ...(data || {}),
+  ...params,
+})
 
-  if (user_id) {
-    data['user_id'] = user_id
-  }
+const getData = ({ user_id: userId, data }, params) =>
+  mergeObjectWithUser(userId, data, params)
 
-  return data
-}
+const getWhere = ({ user_id: userId, where }, params) =>
+  mergeObjectWithUser(userId, where, params)
+
+const getOrder = ({ order }, params) => arrayMergeParams(order, params)
+
+const getInclude = ({ include }, params) => arrayMergeParams(include, params)
 
 class Repository {
   setUser({ id }) {
@@ -40,23 +37,33 @@ class Repository {
 
     return this
   }
-  async getAll(params = {}, attributes = [], include = []) {
+  async getAll(params = {}, order = [], attributes = [], include = []) {
     const where = getWhere(this, params)
 
-    const find = { where, attributes, include }
-    if (isEmpty(attributes)) {
-      delete find.attributes
+    const query = {
+      where,
+      order: getOrder(this, order),
+      attributes,
+      include: getInclude(this, include),
     }
-    if (isEmpty(include)) {
-      delete find.include
+    if (isEmpty(query.order)) {
+      query.order = [['created_at', 'DESC']]
+    }
+    if (isEmpty(query.attributes)) {
+      delete query.attributes
+    }
+    if (isEmpty(query.include)) {
+      delete query.include
     }
     if (!isEmpty(this.user_id)) {
-      find['user_id'] = this.user_id
+      query['user_id'] = this.user_id
     }
 
-    const users = await this.model.findAll(find)
+    console.log({ query })
 
-    return users
+    const entities = await this.model.findAll(query)
+
+    return entities
   }
   async findById(id) {
     const entity = await this.findBy(id)

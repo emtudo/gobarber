@@ -41,6 +41,7 @@ class UserRepository extends Repository {
   },
   async getAll(
     params = {},
+    order = [],
     attributes = defaultAttributes,
     include = defaultInclude,
   ) {
@@ -49,7 +50,7 @@ class UserRepository extends Repository {
       where['provider'] = true
     }
 
-    const find = { where, attributes, include }
+    const find = { where, order, attributes, include }
     if (isEmpty(attributes)) {
       delete find.attributes
     }

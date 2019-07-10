@@ -11,7 +11,7 @@ class AppointmentController {
   async index(request, response) {
     const appointments = await AppointmentRepository.setUser(
       request.user,
-    ).getAll()
+    ).getAllNoCancel()
 
     return response.json(appointments)
   }
