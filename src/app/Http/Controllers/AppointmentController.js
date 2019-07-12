@@ -1,10 +1,12 @@
-const { startOfHour, parseISO, isBefore } = require('date-fns')
-
 const Repository = require('../../Domains/Appointments/Repositories/AppointmentRepository')
 const AppointmentRepository = new Repository()
 const BaseProviderRepository = require('../../Domains/Users/Repositories/ProviderRepository')
 const ProviderRepository = new BaseProviderRepository()
-const { create, cancel } = require('../../Domains/Appointments/Services')
+const {
+  create,
+  cancel,
+  available,
+} = require('../../Domains/Appointments/Services')
 
 const { create: validationCreate } = require('../../Domains/Appointments/Rules')
 
@@ -30,24 +32,7 @@ class AppointmentController {
       })
     }
 
-    /**
-     * check for past dates
-     */
-    const hourStart = startOfHour(parseISO(date))
-
-    if (isBefore(hourStart, new Date())) {
-      return response.status(400).json({ error: 'Past date are not permitted' })
-    }
-
-    /**
-     * Check date availability
-     */
-    const isAvailable = await AppointmentRepository.isAvailable(
-      provider_id,
-      hourStart,
-    )
-
-    if (!isAvailable) {
+    if (!(await available(provider_id, date))) {
       return response
         .status(400)
         .json({ error: 'Appointment date unavailable' })
@@ -55,7 +40,7 @@ class AppointmentController {
 
     const params = {
       provider_id,
-      date: hourStart,
+      date,
     }
 
     const appointment = await create(params, user)
