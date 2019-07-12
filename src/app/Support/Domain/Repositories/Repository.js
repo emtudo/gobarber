@@ -10,7 +10,7 @@ const mergeObjectWithUser = (userId, data, params) => {
   return newData
 }
 
-const arrayMergeParams = (data, params) => [...(data || []), ...params]
+const arrayMergeParams = (data, params = []) => [...(data || []), ...params]
 
 const objectMergeParams = (data, params) => ({
   ...(data || {}),
@@ -84,25 +84,28 @@ class Repository {
       query['offset'] = (this.page - 1) * this.limit
     }
 
-    console.log({ query, limit: this.limit, page: this.page })
-
     const entities = await this.model.findAll(query)
 
     return entities
   }
-  async findById(id) {
-    const entity = await this.findBy(id)
+  async findById(id, params = {}) {
+    const entity = await this.findBy(id, 'id', params)
 
     return entity
   }
-  async findBy(value, field = 'id') {
+  async findBy(value, field = 'id', params = {}) {
     const where = getWhere(this, {
       [field]: value,
     })
 
-    const model = await this.model.findOne({
-      where,
-    })
+    const query = { ...params, where }
+
+    const include = getInclude(this, [])
+    if (!isEmpty(include)) {
+      query['include'] = include
+    }
+
+    const model = await this.model.findOne(query)
 
     return model
   }

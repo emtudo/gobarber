@@ -8,20 +8,20 @@ const ProviderRepository = new BaseProviderRepository()
 const { create: validationCreate } = require('../../Domains/Appointments/Rules')
 
 class AppointmentController {
-  async index(request, response) {
-    const { page = 1, limit } = request.query
+  async index({ query, user }, response) {
+    const { page = 1, limit } = query
     const appointments = await AppointmentRepository.setLimit(limit, page)
-      .setUser(request.user)
+      .setUser(user)
       .getAllNoCancel()
 
     return response.json(appointments)
   }
-  async store(request, response) {
-    if (!(await validationCreate.isValid(request.body))) {
+  async store({ body, user }, response) {
+    if (!(await validationCreate.isValid(body))) {
       return response.status(422).json({ error: 'Validation fails' })
     }
-    const { provider_id: providerId, date } = request.body
-    const provider = await ProviderRepository.findById(providerId)
+    const { provider_id, date } = body
+    const provider = await ProviderRepository.findById(provider_id)
     if (!provider) {
       return response.status(400).json({
         error: 'Provider do not exists.',
@@ -56,11 +56,31 @@ class AppointmentController {
       date: hourStart,
     }
 
-    const appointment = await AppointmentRepository.setUser(
-      request.user,
-    ).create(params)
+    const appointment = await AppointmentRepository.setUser(user).create(
+      params,
+      user,
+    )
 
     return response.json(appointment)
+  }
+  async delete({ user, params }, response) {
+    const appointment = await AppointmentRepository.setUser(user)
+      .setIncludeEmail()
+      .findById(params.id)
+
+    const canceled = await AppointmentRepository.cancel(appointment, user)
+
+    if (!canceled) {
+      return response
+        .status(401)
+        .json({ error: 'You can only cancel appointments 2 hours in advance' })
+    }
+
+    const appointmentCancel = await AppointmentRepository.setUser(user)
+      .setIncludeNoEmail()
+      .findById(params.id)
+
+    return response.json(appointmentCancel)
   }
 }
 

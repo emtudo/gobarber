@@ -1,10 +1,10 @@
 const User = require('../../Users/User')
 const File = require('../../Files/File')
 
-const getInclude = as => ({
+const getInclude = (as, attributes = ['id', 'name']) => ({
   model: User,
   as,
-  attributes: ['id', 'name'],
+  attributes,
   include: [
     {
       model: File,
