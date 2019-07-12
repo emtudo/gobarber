@@ -23,5 +23,12 @@ yarn && yarn sequelize db:migrate
 ## Test
 
 ```shell
-yarn dev
+yarn dev // test api
+yarn queue // test queue (send emails)
 ```
+
+## Check emails
+
+Open: http://localhost:8025
+
+
