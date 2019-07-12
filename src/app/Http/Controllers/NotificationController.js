@@ -2,7 +2,7 @@ const {
   getAllByParams,
   setRead,
   findById,
-} = require('../../Domains/Notifications/Repositories/NotificationRepository')
+} = require('../../Domains/Notifications/Services')
 
 class NotificationController {
   async index({ user }, response) {
@@ -11,6 +11,7 @@ class NotificationController {
 
     return response.json(notifications)
   }
+
   async update({ user, params }, response) {
     const { id } = params
     const notification = await findById(id)

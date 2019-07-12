@@ -4,6 +4,7 @@ const Repository = require('../../Domains/Appointments/Repositories/AppointmentR
 const AppointmentRepository = new Repository()
 const BaseProviderRepository = require('../../Domains/Users/Repositories/ProviderRepository')
 const ProviderRepository = new BaseProviderRepository()
+const { create, cancel } = require('../../Domains/Appointments/Services')
 
 const { create: validationCreate } = require('../../Domains/Appointments/Rules')
 
@@ -16,6 +17,7 @@ class AppointmentController {
 
     return response.json(appointments)
   }
+
   async store({ body, user }, response) {
     if (!(await validationCreate.isValid(body))) {
       return response.status(422).json({ error: 'Validation fails' })
@@ -56,19 +58,17 @@ class AppointmentController {
       date: hourStart,
     }
 
-    const appointment = await AppointmentRepository.setUser(user).create(
-      params,
-      user,
-    )
+    const appointment = await create(params, user)
 
     return response.json(appointment)
   }
+
   async delete({ user, params }, response) {
     const appointment = await AppointmentRepository.setUser(user)
       .setIncludeEmailAndUser()
       .findById(params.id)
 
-    const canceled = await AppointmentRepository.cancel(appointment)
+    const canceled = await cancel(appointment)
 
     if (!canceled) {
       return response

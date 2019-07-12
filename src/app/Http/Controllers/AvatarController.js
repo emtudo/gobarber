@@ -1,4 +1,4 @@
-const { create } = require('./_createFile')
+const { create } = require('../../Domains/Files/Services')
 
 class AvatarController {
   async store(request, response) {

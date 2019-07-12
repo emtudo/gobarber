@@ -2,7 +2,7 @@ const { startOfDay, endOfDay, parseISO } = require('date-fns')
 const { Op } = require('sequelize')
 
 const Repository = require('./AppointmentRepository')
-const includeUser = require('./_includeUser')('user')
+const includeUser = require('../Libs/_includeUser')('user')
 
 const getParams = date => {
   const newDate = parseISO(date)

@@ -1,14 +1,7 @@
-const { isBefore, subHours } = require('date-fns')
-
 const Appointment = require('../Appointment')
 const Repository = require('../../../Support/Domain/Repositories/Repository')
-const includeUser = require('./_includeUser')
+const includeUser = require('../Libs/_includeUser')
 const includeProvider = includeUser('provider')
-const {
-  createFromAppointment: createNotificationFromAppointment,
-} = require('../../Notifications/Repositories/NotificationRepository')
-const Queue = require('../../../../lib/Queue')
-const CancellationMail = require('../Jobs/CancellationMail')
 
 class AppointmentRepository extends Repository {
   constructor() {
@@ -34,13 +27,6 @@ class AppointmentRepository extends Repository {
     return this
   }
 
-  async create(data, user) {
-    const appointment = await super.create(data)
-    await createNotificationFromAppointment(appointment, user)
-
-    return appointment
-  }
-
   async getAllNoCancel(params = {}) {
     const newParams = { ...params, canceled_at: null }
     const appointments = await super.getAll(newParams)
@@ -57,27 +43,6 @@ class AppointmentRepository extends Repository {
     const model = await this.model.findOne({ where })
 
     return !model
-  }
-
-  async cancel(appointment) {
-    const dateWithSub = subHours(appointment.date, 2)
-
-    if (isBefore(dateWithSub, new Date())) {
-      return false
-    }
-
-    appointment.canceled_at = new Date()
-    appointment.save()
-
-    const { provider, user } = appointment
-
-    Queue.add(CancellationMail.key, {
-      appointment,
-      provider,
-      user,
-    })
-
-    return appointment
   }
 }
 
