@@ -7,8 +7,8 @@ const includeProvider = includeUser('provider')
 const {
   createFromAppointment: createNotificationFromAppointment,
 } = require('../../Notifications/Repositories/NotificationRepository')
-const Mail = require('../../../../lib/Mail')
-const { formattedDate } = require('../../../../helpers')
+const Queue = require('../../../../lib/Queue')
+const CancellationMail = require('../Jobs/CancellationMail')
 
 class AppointmentRepository extends Repository {
   constructor() {
@@ -71,18 +71,10 @@ class AppointmentRepository extends Repository {
 
     const { provider, user } = appointment
 
-    const { name, email } = provider
-    const date = formattedDate(appointment.date)
-
-    await Mail.sendMail({
-      to: `${name} <${email}>`,
-      subject: 'Agendamento cancelado',
-      template: 'cancellation',
-      context: {
-        user_name: user.name,
-        provider_name: name,
-        date,
-      },
+    Queue.add(CancellationMail.key, {
+      appointment,
+      provider,
+      user,
     })
 
     return appointment
