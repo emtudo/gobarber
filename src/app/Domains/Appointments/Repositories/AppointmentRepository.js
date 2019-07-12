@@ -19,18 +19,17 @@ class AppointmentRepository extends Repository {
     this.include = [includeProvider]
   }
 
-  setIncludeEmail(as = 'provider') {
-    const include = includeUser(as, ['id', 'name', 'email'])
+  setIncludeEmailAndUser() {
+    const provider = includeUser('provider', ['id', 'name', 'email'])
+    const user = includeUser('user')
 
-    this.include = [include]
+    this.include = [provider, user]
 
     return this
   }
 
-  setIncludeNoEmail(as = 'provider') {
-    const include = includeUser(as, ['id', 'name'])
-
-    this.include = [include]
+  setIncludeNoEmailNoUser() {
+    this.include = [includeProvider]
 
     return this
   }
@@ -60,7 +59,7 @@ class AppointmentRepository extends Repository {
     return !model
   }
 
-  async cancel(appointment, user) {
+  async cancel(appointment) {
     const dateWithSub = subHours(appointment.date, 2)
 
     if (isBefore(dateWithSub, new Date())) {
@@ -70,12 +69,10 @@ class AppointmentRepository extends Repository {
     appointment.canceled_at = new Date()
     appointment.save()
 
-    const { provider } = appointment
+    const { provider, user } = appointment
 
     const { name, email } = provider
-    console.log({ date: appointment.date })
     const date = formattedDate(appointment.date)
-    console.log({ date })
 
     await Mail.sendMail({
       to: `${name} <${email}>`,

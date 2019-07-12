@@ -65,10 +65,10 @@ class AppointmentController {
   }
   async delete({ user, params }, response) {
     const appointment = await AppointmentRepository.setUser(user)
-      .setIncludeEmail()
+      .setIncludeEmailAndUser()
       .findById(params.id)
 
-    const canceled = await AppointmentRepository.cancel(appointment, user)
+    const canceled = await AppointmentRepository.cancel(appointment)
 
     if (!canceled) {
       return response
@@ -77,7 +77,7 @@ class AppointmentController {
     }
 
     const appointmentCancel = await AppointmentRepository.setUser(user)
-      .setIncludeNoEmail()
+      .setIncludeNoEmailNoUser()
       .findById(params.id)
 
     return response.json(appointmentCancel)
