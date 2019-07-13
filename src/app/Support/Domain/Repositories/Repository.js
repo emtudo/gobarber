@@ -32,15 +32,18 @@ class Repository {
     this.limit = 100
     this.page = 1
   }
+
   setUser({ id }) {
     this.user_id = id
     return this
   }
+
   setUserId(userId) {
     this.user_id = userId
 
     return this
   }
+
   setLimit(limit, page) {
     if (limit) {
       this.limit = limit
@@ -51,11 +54,13 @@ class Repository {
 
     return this
   }
+
   setPage(page) {
     this.page = page
 
     return this
   }
+
   async getAll(params = {}, order = [], attributes = [], include = []) {
     const where = getWhere(this, params)
 
@@ -88,11 +93,13 @@ class Repository {
 
     return entities
   }
+
   async findById(id, params = {}) {
     const entity = await this.findBy(id, 'id', params)
 
     return entity
   }
+
   async findBy(value, field = 'id', params = {}) {
     const where = getWhere(this, {
       [field]: value,
@@ -109,12 +116,14 @@ class Repository {
 
     return model
   }
+
   async create(data) {
     const newData = getData(this, data)
     const entity = await this.model.create(newData)
 
     return entity
   }
+
   async update(entity, data) {
     const newData = getData(this, data)
 

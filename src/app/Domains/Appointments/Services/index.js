@@ -1,4 +1,6 @@
 const {
+  startOfDay,
+  endOfDay,
   startOfHour,
   parseISO,
   isBefore,
@@ -9,6 +11,7 @@ const {
   setSeconds,
   format,
 } = require('date-fns')
+const { Op } = require('sequelize')
 
 const Repository = require('../Repositories/AppointmentRepository')
 
@@ -36,6 +39,17 @@ const getAllAvailable = async (providerId, date) => {
     '19:00',
   ]
 
+  const searchDate = parseISO(date)
+
+  const params = {
+    provider_id: providerId,
+    date: {
+      [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+    },
+  }
+
+  const appointments = await AppointmentRepository.getAll(params)
+
   const newSchedules = await Promise.all(
     schedules.map(
       time =>
@@ -54,7 +68,9 @@ const getAllAvailable = async (providerId, date) => {
             value,
             available:
               isAfter(dateTime, new Date()) &&
-              (await available(providerId, value)),
+              !appointments.find(
+                appointment => format(appointment.date, 'HH:mm') === time,
+              ),
           }
 
           resolve(result)
