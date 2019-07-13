@@ -7,7 +7,7 @@ const defines = {
   url_avatar: {
     type: Sequelize.VIRTUAL,
     get() {
-      return `http://localhost:3333/avatar/${this.path}`
+      return `${process.env.APP_URL}/avatar/${this.path}`
     },
   },
   url: {

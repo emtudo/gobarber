@@ -1,3 +1,4 @@
+require('dotenv/config')
 const express = require('express')
 require('express-async-errors')
 const routes = require('./app/Http/Routes')
@@ -37,6 +38,9 @@ class App {
 
   exceptionHandler() {
     this.server.use(async (error, request, response, next) => {
+      if (process.env.NODE_ENV !== 'development') {
+        return response.status(500).json({ error: 'internal server error' })
+      }
       const errors = await new Youch(error, request).toJSON()
 
       return response.status(500).json(errors)

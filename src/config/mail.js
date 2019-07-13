@@ -1,12 +1,12 @@
 module.exports = {
-  host: 'localhost',
-  port: '1025',
-  secure: false,
+  host: process.env.MAIL_HOST,
+  port: process.env.MAIL_PORT,
+  secure: process.env.MAIL_SECURE,
   auth: {
-    user: null,
-    pass: null,
+    user: process.env.MAIL_AUTH_USER,
+    pass: process.env.MAIL_AUTH_PASS,
   },
   default: {
-    from: 'Equipe Gobarger <noreply@emtudo.com>',
+    from: process.env.MAIL_DEFAULT_FROM,
   },
 }
