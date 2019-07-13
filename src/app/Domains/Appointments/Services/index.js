@@ -53,7 +53,7 @@ const getAllAvailable = async (providerId, date) => {
   const newSchedules = await Promise.all(
     schedules.map(
       time =>
-        new Promise(async (resolve, reject) => {
+        new Promise(async resolve => {
           const [hour, minute] = time.split(':')
           const parseDate = parseISO(date)
           const dateTime = setSeconds(
